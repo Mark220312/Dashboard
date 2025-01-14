@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Movimientos Financieros</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8f8f8;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #27a585;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input[type="number"],
+        input[type="date"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button {
+            background-color: #27a585;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #1f8f73;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .nav-button {
+            background-color: #27a585;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .nav-button:hover {
+            background-color: #1f8f73;
+        }
+
+        .categoria-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .nueva-categoria {
+            display: none;
+        }
+
+        .btn-add-category {
+            background-color: #4a90e2;
+            padding: 10px;
+            height: 42px;
+            margin-top: 0;
+            width: auto;
+        }
+
+        .categoria-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+        }
+
+        .categoria-list {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .categoria-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            padding: 5px 10px;
+            font-size: 12px;
+            width: 60px;
+        }
+    </style>
+</head>
+<body>
+    <a href="dashboard.html" class="nav-button">← Volver al Dashboard</a>
+    
+    <div class="form-container">
+        <h1>Registro de Movimientos Financieros</h1>
+        <form id="financialForm">
+            <div class="form-group">
+                <label>Tipo de Movimiento</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="ingreso" name="tipo" value="ingreso" required>
+                        <label for="ingreso">Ingreso</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="egreso" name="tipo" value="egreso" required>
+                        <label for="egreso">Egreso</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="monto">Monto ($)</label>
+                <input type="number" id="monto" name="monto" step="0.01" required>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha">Fecha</label>
+                <input type="date" id="fecha" name="fecha" required>
+            </div>
+
+            <div class="form-group">
+                <label for="categoria">Categoría</label>
+                <div class="categoria-container">
+                    <select id="categoria" name="categoria" required>
+                        <option value="">Seleccione una categoría</option>
+                        <option value="Gobierno">Gobierno</option>
+                        <option value="Pyme">Pyme</option>
+                        <option value="Enterprise">Enterprise</option>
+                        <option value="Educación">Educación</option>
+                        <option value="Salud">Salud</option>
+                        <option value="Retail">Retail</option>
+                        <option value="Manufactura">Manufactura</option>
+                        <option value="Tecnología">Tecnología</option>
+                        <option value="nueva">+ Agregar nueva categoría</option>
+                    </select>
+                    <button type="button" class="btn-add-category" onclick="toggleNuevaCategoria()">+</button>
+                </div>
+                
+                <div id="nuevaCategoriaForm" class="nueva-categoria">
+                    <input type="text" id="nuevaCategoria" placeholder="Nombre de la nueva categoría">
+                    <div class="categoria-actions">
+                        <button type="button" onclick="guardarCategoria()">Guardar Categoría</button>
+                        <button type="button" class="btn-cancel" onclick="toggleNuevaCategoria()">Cancelar</button>
+                    </div>
+                </div>
+
+                <div id="categoriaList" class="categoria-list">
+                    <!-- Las categorías se mostrarán aquí -->
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <input type="text" id="descripcion" name="descripcion" required>
+            </div>
+
+            <button type="submit">Registrar Movimiento</button>
+        </form>
+        
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        // Cargar categorías almacenadas al iniciar
+        let categorias = JSON.parse(localStorage.getItem('categorias')) || [
+            'Gobierno', 'Pyme', 'Enterprise', 'Educación', 
+            'Salud', 'Retail', 'Manufactura', 'Tecnología'
+        ];
+
+        function actualizarListaCategorias() {
+            const select = document.getElementById('categoria');
+            const categoriaList = document.getElementById('categoriaList');
+            
+            // Limpiar opciones existentes (excepto la primera y última)
+            while (select.options.length > 2) {
+                select.remove(1);
+            }
+            
+            // Actualizar select
+            categorias.forEach(categoria => {
+                const option = new Option(categoria, categoria);
+                select.add(option, select.options[select.options.length - 1]);
+            });
+
+            // Actualizar lista visible
+            categoriaList.innerHTML = categorias.map(categoria => `
+                <div class="categoria-item">
+                    <span>${categoria}</span>
+                    <button type="button" class="btn-delete" onclick="eliminarCategoria('${categoria}')">
+                        Eliminar
+                    </button>
+                </div>
+            `).join('');
+
+            // Guardar en localStorage
+            localStorage.setItem('categorias', JSON.stringify(categorias));
+        }
+
+        function toggleNuevaCategoria() {
+            const nuevaCategoriaForm = document.getElementById('nuevaCategoriaForm');
+            nuevaCategoriaForm.style.display = 
+                nuevaCategoriaForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function guardarCategoria() {
+            const nuevaCategoria = document.getElementById('nuevaCategoria').value.trim();
+            
+            if (nuevaCategoria && !categorias.includes(nuevaCategoria)) {
+                categorias.push(nuevaCategoria);
+                actualizarListaCategorias();
+                document.getElementById('nuevaCategoria').value = '';
+                toggleNuevaCategoria();
+                showMessage('Categoría agregada exitosamente', 'success');
+            } else {
+                showMessage('La categoría ya existe o está vacía', 'error');
+            }
+        }
+
+        function eliminarCategoria(categoria) {
+            if (confirm(`¿Está seguro de eliminar la categoría "${categoria}"?`)) {
+                categorias = categorias.filter(cat => cat !== categoria);
+                actualizarListaCategorias();
+                showMessage('Categoría eliminada exitosamente', 'success');
+            }
+        }
+
+        document.getElementById('categoria').addEventListener('change', function(e) {
+            if (e.target.value === 'nueva') {
+                toggleNuevaCategoria();
+                e.target.value = ''; // Reset select
+            }
+        });
+
+        document.getElementById('financialForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        type: document.querySelector('input[name="tipo"]:checked').value,
+        amount: document.getElementById('monto').value,
+        date: document.getElementById('fecha').value,
+        category: document.getElementById('categoria').value,
+        description: document.getElementById('descripcion').value
+    };
+
+    try {
+        const response = await fetch('http://localhost:8080/api/movements/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            showMessage('Movimiento registrado exitosamente', 'success');
+            this.reset();
+        } else {
+            showMessage('Error al registrar el movimiento', 'error');
+        }
+    } catch (error) {
+        showMessage('Error de conexión', 'error');
+        console.error('Error:', error);
+    }
+});
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Establecer la fecha máxima como hoy
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fecha').max = today;
+
+        // Inicializar lista de categorías al cargar
+        actualizarListaCategorias();
+    </script>
+</body>
+</html>
